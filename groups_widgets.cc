@@ -16,6 +16,8 @@
 #include <QIcon>
 #include <QMap>
 #include <QVector>
+#include <QFileDialog>
+#include <QMessageBox>
 #include <QFileInfo>
 
 using std::vector;
@@ -161,17 +163,18 @@ void DictListModel::populate(
   std::vector< sptr< Dictionary::Class > > const & active,
   std::vector< sptr< Dictionary::Class > > const & available )
 {
+  beginResetModel();
   dictionaries = active;
   allDicts = &available;
-
-  reset();
+  endResetModel();
 }
 
 void DictListModel::populate(
   std::vector< sptr< Dictionary::Class > > const & active )
 {
+  beginResetModel();
   dictionaries = active;
-  reset();
+  endResetModel();
 }
 
 void DictListModel::setAsSource()
@@ -351,12 +354,13 @@ void DictListModel::removeSelectedRows( QItemSelectionModel * source )
   if ( !rows.count() )
     return;
 
+  beginResetModel();
   for ( int i = rows.count()-1; i >= 0; --i )
   {
     dictionaries.erase( dictionaries.begin() + rows.at( i ).row() );
   }
+  endResetModel();
 
-  reset();
   emit contentChanged();
 }
 
@@ -413,7 +417,8 @@ void DictListModel::addSelectedUniqueFromModel( QItemSelectionModel * source )
         list.remove( j );
         if ( list.isEmpty() )
         {
-          reset();
+          beginResetModel();
+          endResetModel(); // TODO
           emit contentChanged();
           return;
         }
@@ -422,7 +427,8 @@ void DictListModel::addSelectedUniqueFromModel( QItemSelectionModel * source )
     }
   }
 
-  reset();
+  beginResetModel();
+  endResetModel(); // TODO
   emit contentChanged();
 }
 
@@ -447,7 +453,8 @@ void DictListModel::filterDuplicates()
 
   if ( doReset )
   {
-    reset();
+    beginResetModel();
+    endResetModel(); // TODO
     emit contentChanged();
   }
 }

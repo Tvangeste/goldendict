@@ -2,6 +2,7 @@
 #define HOTKEYWRAPPER_H
 
 #include <QtGui>
+#include <QMainWindow>
 
 #ifdef Q_WS_X11
 

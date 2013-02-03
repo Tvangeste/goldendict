@@ -32,8 +32,8 @@
 // Phonon headers are a mess. How to include them properly? Send patches if you
 // know.
 #ifdef __WIN32
-#include <Phonon/AudioOutput>
-#include <Phonon/MediaObject>
+// #include <Phonon/AudioOutput>
+// #include <Phonon/MediaObject>
 #else
 #include <phonon/audiooutput.h>
 #include <phonon/mediaobject.h>
@@ -45,8 +45,8 @@ using std::list;
 /// A phonon-based audio player, created on demand
 struct AudioPlayer
 {
-  Phonon::AudioOutput output;
-  Phonon::MediaObject object;
+  // Phonon::AudioOutput output;
+  // Phonon::MediaObject object;
 
   static AudioPlayer & instance();
 
@@ -55,10 +55,10 @@ private:
   AudioPlayer();
 };
 
-AudioPlayer::AudioPlayer():
-    output( Phonon::AccessibilityCategory )
+AudioPlayer::AudioPlayer() //:
+    // output( Phonon::AccessibilityCategory )
 {
-  Phonon::createPath( &object, &output );
+  // Phonon::createPath( &object, &output );
 }
 
 AudioPlayer & AudioPlayer::instance()
@@ -214,14 +214,15 @@ void ArticleView::showDefinition( QString const & word, unsigned group,
                                   Contexts const & contexts )
 {
   QUrl req;
+  QUrlQuery query;
 
   req.setScheme( "gdlookup" );
   req.setHost( "localhost" );
-  req.addQueryItem( "word", word );
-  req.addQueryItem( "group", QString::number( group ) );
+  query.addQueryItem( "word", word );
+  query.addQueryItem( "group", QString::number( group ) );
 
   if ( scrollTo.size() )
-    req.addQueryItem( "scrollto", scrollTo );
+    query.addQueryItem( "scrollto", scrollTo );
 
   if ( contexts.size() )
   {
@@ -235,13 +236,13 @@ void ArticleView::showDefinition( QString const & word, unsigned group,
 
     buf.close();
 
-    req.addQueryItem( "contexts", QString::fromLatin1( buf.buffer().toBase64() ) );
+    query.addQueryItem( "contexts", QString::fromLatin1( buf.buffer().toBase64() ) );
   }
 
   QString mutedDicts = getMutedForGroup( group );
 
   if ( mutedDicts.size() )
-    req.addQueryItem( "muted", mutedDicts );
+    query.addQueryItem( "muted", mutedDicts );
 
   // Update both histories (pages history and headwords history)
   saveHistoryUserData();
@@ -254,6 +255,8 @@ void ArticleView::showDefinition( QString const & word, unsigned group,
   ui.highlightAllButton->setChecked(false);
 
   emit setExpandMode( expandOptionalParts );
+
+  req.setQuery(query);
 
   ui.definition->load( req );
 
@@ -271,6 +274,7 @@ void ArticleView::showAnticipation()
 void ArticleView::loadFinished( bool )
 {
   QUrl url = ui.definition->url();
+  QUrlQuery query(url);
 
   // See if we have any iframes in need of expansion
 
@@ -342,11 +346,11 @@ void ArticleView::loadFinished( bool )
     }
   }
   else
-  if ( url.queryItemValue( "scrollto" ).startsWith( "gdfrom-" ) )
+  if ( query.queryItemValue( "scrollto" ).startsWith( "gdfrom-" ) )
   {
     // There is no active article saved in history, but we have it as a parameter.
     // setCurrentArticle will save it and scroll there.
-    setCurrentArticle( url.queryItemValue( "scrollto" ), true );
+    setCurrentArticle( query.queryItemValue( "scrollto" ), true );
   }
 
 
@@ -392,8 +396,9 @@ void ArticleView::handleUrlChanged( QUrl const & url )
 
 unsigned ArticleView::getGroup( QUrl const & url )
 {
-  if ( url.scheme() == "gdlookup" && url.hasQueryItem( "group" ) )
-    return url.queryItemValue( "group" ).toUInt();
+  QUrlQuery query(url);
+  if ( url.scheme() == "gdlookup" && query.hasQueryItem( "group" ) )
+    return query.queryItemValue( "group" ).toUInt();
 
   return 0;
 }
@@ -707,10 +712,11 @@ void ArticleView::linkHovered ( const QString & link, const QString & , const QS
       def = def.mid( 1 );
     }
 
-    if( url.hasQueryItem( "dict" ) )
+    QUrlQuery query(url);
+    if( query.hasQueryItem( "dict" ) )
     {
       // Link to other dictionary
-      QString dictName( url.queryItemValue( "dict" ) );
+      QString dictName( query.queryItemValue( "dict" ) );
       if( !dictName.isEmpty() )
         msg = tr( "Definition from dictionary \"%1\": %2" ).arg( dictName ).arg( def );
     }
@@ -777,10 +783,11 @@ void ArticleView::openLink( QUrl const & url, QUrl const & ref,
     else
     {
       QString newScrollTo( scrollTo );
-      if( url.hasQueryItem( "dict" ) )
+      QUrlQuery query(url);
+      if( query.hasQueryItem( "dict" ) )
       {
         // Link to other dictionary
-        QString dictName( url.queryItemValue( "dict" ) );
+        QString dictName( query.queryItemValue( "dict" ) );
         for( unsigned i = 0; i < allDictionaries.size(); i++ )
         {
           if( dictName.compare( QString::fromUtf8( allDictionaries[ i ]->getName().c_str() ) ) == 0 )
@@ -968,14 +975,15 @@ void ArticleView::updateMutedContents()
 
   QString mutedDicts = getMutedForGroup( group );
 
-  if ( currentUrl.queryItemValue( "muted" ) != mutedDicts )
+  QUrlQuery query(currentUrl);
+  if ( query.queryItemValue( "muted" ) != mutedDicts )
   {
     // The list has changed -- update the url
 
-    currentUrl.removeQueryItem( "muted" );
+    query.removeQueryItem( "muted" ); // TODO: can remove?
 
     if ( mutedDicts.size() )
-    currentUrl.addQueryItem( "muted", mutedDicts );
+      query.addQueryItem( "muted", mutedDicts );
 
     saveHistoryUserData();
 
@@ -1350,19 +1358,19 @@ void ArticleView::resourceDownloadFinished()
 #endif
           if ( !cfg.preferences.useExternalPlayer )
           {
-            // Play via Phonon
+//            // Play via Phonon //TODO
 
-            QBuffer * buf = new QBuffer;
+//            QBuffer * buf = new QBuffer;
 
-            buf->buffer().append( &data.front(), data.size() );
+//            buf->buffer().append( &data.front(), data.size() );
 
-            Phonon::MediaSource source( buf );
-            source.setAutoDelete( true ); // Dispose of our buf when done
+//            Phonon::MediaSource source( buf );
+//            source.setAutoDelete( true ); // Dispose of our buf when done
 
-            AudioPlayer::instance().object.stop();
-            AudioPlayer::instance().object.clear();
-            AudioPlayer::instance().object.enqueue( source );
-            AudioPlayer::instance().object.play();
+//            AudioPlayer::instance().object.stop();
+//            AudioPlayer::instance().object.clear();
+//            AudioPlayer::instance().object.enqueue( source );
+//            AudioPlayer::instance().object.play();
           }
           else
           {

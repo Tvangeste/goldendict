@@ -112,7 +112,8 @@ MediaWikiWordSearchRequest::MediaWikiWordSearchRequest( wstring const & str,
   DPRINTF( "request begin\n" );
   QUrl reqUrl( url + "/api.php?action=query&list=allpages&aplimit=40&format=xml" );
 
-  reqUrl.addQueryItem( "apfrom", gd::toQString( str ) );
+  QUrlQuery query(reqUrl); // TODO: can modify?
+  query.addQueryItem( "apfrom", gd::toQString( str ) );
 
   netReply = mgr.get( QNetworkRequest( reqUrl ) );
 
@@ -252,7 +253,8 @@ void MediaWikiArticleRequest::addQuery( QNetworkAccessManager & mgr,
 
   QUrl reqUrl( url + "/api.php?action=parse&prop=text|revid&format=xml&redirects" );
 
-  reqUrl.addQueryItem( "page", gd::toQString( str ) );
+  QUrlQuery query(reqUrl);
+  query.addQueryItem( "page", gd::toQString( str ) );
 
   sptr< QNetworkReply > netReply = mgr.get( QNetworkRequest( reqUrl ) );
   

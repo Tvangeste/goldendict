@@ -9,6 +9,7 @@
 #include <vector>
 
 #include <QListWidget>
+#include <QAbstractListModel>
 #include <QSortFilterProxyModel>
 
 #include "config.hh"

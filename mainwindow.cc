@@ -11,7 +11,11 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QIcon>
+#include <QFileDialog>
 #include <QList>
+#include <QPageSetupDialog>
+#include <QPrintDialog>
+#include <QPrintPreviewDialog>
 #include <QToolBar>
 #include <QCloseEvent>
 #include <QDesktopServices>

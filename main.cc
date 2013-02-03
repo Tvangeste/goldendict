@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <QIcon>
+#include <QMessageBox>
 #include "gdappstyle.hh"
 #include "mainwindow.hh"
 #include "config.hh"

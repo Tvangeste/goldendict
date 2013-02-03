@@ -3,6 +3,7 @@
 
 #include "about.hh"
 #include <QtGui>
+#include <QRegExp>
 
 About::About( QWidget * parent ): QDialog( parent )
 {
@@ -35,7 +36,7 @@ About::About( QWidget * parent ): QDialog( parent )
 
       str.replace( "\\", "@" );
 
-      str = Qt::escape( str );
+      str =  str.toHtmlEscaped();
 
       int colon = str.indexOf( ":" );
 

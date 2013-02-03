@@ -178,7 +178,7 @@ void BtreeWordSearchRunnable::run()
 
 void BtreeWordSearchRequest::run()
 {
-  if ( isCancelled )
+  if ( isCancelled.loadAcquire() )
   {
     finish();
     return;
@@ -225,7 +225,7 @@ void BtreeWordSearchRequest::run()
     if ( chainOffset )
     for( ; ; )
     {
-      if ( isCancelled )
+      if ( isCancelled.loadAcquire() )
         break;
       
       //DPRINTF( "offset = %u, size = %u\n", chainOffset - &leaf.front(), leaf.size() );
@@ -296,7 +296,7 @@ void BtreeWordSearchRequest::run()
       }
     }
 
-    if ( charsLeftToChop && !isCancelled )
+    if ( charsLeftToChop && !isCancelled.loadAcquire() )
     {
       --charsLeftToChop;
       folded.resize( folded.size() - 1 );

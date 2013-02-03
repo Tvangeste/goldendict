@@ -5,6 +5,7 @@
 #define __MAINWINDOW_HH_INCLUDED__
 
 #include <QMainWindow>
+#include <QPrinter>
 #include <QThread>
 #include <QToolButton>
 #include <QSystemTrayIcon>

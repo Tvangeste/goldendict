@@ -19,10 +19,11 @@ isEmpty( hasGit ) {
 
 # DEPENDPATH += . generators
 INCLUDEPATH += .
-QT += webkit
+QT += widgets
+QT += webkit webkitwidgets
 QT += xml
 QT += network
-QT += phonon
+#QT += phonon
 CONFIG += exceptions \
     rtti \
     stl

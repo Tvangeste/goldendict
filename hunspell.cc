@@ -197,7 +197,7 @@ void HunspellArticleRequestRunnable::run()
 
 void HunspellArticleRequest::run()
 {
-  if ( isCancelled )
+  if ( isCancelled.loadAcquire() )
   {
     finish();
     return;
@@ -373,7 +373,7 @@ void HunspellHeadwordsRequestRunnable::run()
 
 void HunspellHeadwordsRequest::run()
 {
-  if ( isCancelled )
+  if ( isCancelled.loadAcquire() )
   {
     finish();
     return;
@@ -597,7 +597,7 @@ void HunspellPrefixMatchRequestRunnable::run()
 
 void HunspellPrefixMatchRequest::run()
 {
-  if ( isCancelled )
+  if ( isCancelled.loadAcquire() )
   {
     finish();
     return;

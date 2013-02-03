@@ -20,7 +20,7 @@ public:
     int get_pos();
     int add(char * pat1, char * pat2);
     replentry * item(int n);
-    int near(const char * word);
+    // int near(const char * word); // TODO: huh?
     int match(const char * word, int n);
     int conv(const char * word, char * dest);
 };
